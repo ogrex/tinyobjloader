@@ -29,6 +29,13 @@ extern "C" {
 #endif
 #endif
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#if __has_warning("-Wzero-as-null-pointer-constant")
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
+#endif
+
 class timerutil {
  public:
 #ifdef _WIN32
@@ -138,6 +145,9 @@ static void PrintInfo(const tinyobj::attrib_t& attrib,
     assert(shapes[i].mesh.num_face_vertices.size() ==
            shapes[i].mesh.material_ids.size());
 
+    assert(shapes[i].mesh.num_face_vertices.size() ==
+           shapes[i].mesh.smoothing_group_ids.size());
+
     printf("shape[%ld].num_faces: %lu\n", static_cast<long>(i),
            static_cast<unsigned long>(shapes[i].mesh.num_face_vertices.size()));
 
@@ -158,6 +168,8 @@ static void PrintInfo(const tinyobj::attrib_t& attrib,
 
       printf("  face[%ld].material_id = %d\n", static_cast<long>(f),
              shapes[i].mesh.material_ids[f]);
+      printf("  face[%ld].smoothing_group_id = %d\n", static_cast<long>(f),
+             shapes[i].mesh.smoothing_group_ids[f]);
 
       index_offset += fnum;
     }
